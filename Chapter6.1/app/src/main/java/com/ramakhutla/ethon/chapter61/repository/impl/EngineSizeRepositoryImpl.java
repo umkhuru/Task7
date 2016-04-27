@@ -9,34 +9,36 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.ramakhutla.ethon.chapter61.conf.DBConstants;
-import com.ramakhutla.ethon.chapter61.domain.RentalType;
-import com.ramakhutla.ethon.chapter61.repository.RentalTypeRepository;
+import com.ramakhutla.ethon.chapter61.domain.EngineSizeEmbeddableType;
+import com.ramakhutla.ethon.chapter61.repository.EngineSizeRepository;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by Osman on 2016-04-20.
+ * Created by Ethon on 4/27/2016.
  */
-public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements RentalTypeRepository {
+public class EngineSizeRepositoryImpl extends SQLiteOpenHelper implements EngineSizeRepository{
 
-    public static final String TABLE_NAME = "rentals";
+    public static final String TABLE_NAME = "enginesize";
     private SQLiteDatabase db;
 
     public static final String COLUMN_ID = "id";
-    public static final String COLUMN_PICKUP = "pickUpDate";
-    public static final String COLUMN_RETURN = "returnDate";
+    public static final String COLUMN_ENGINESERIALNUMBER = "EngineSerialNumber";
+    public static final String COLUMN_ENGINESIZE = "EngineSize";
+    public static final String COLUMN_FUELTYPE = "FuelType";
 
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = " CREATE TABLE "
             + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER  PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_PICKUP + " TEXT UNIQUE NOT NULL , "
-            + COLUMN_RETURN + " TEXT NOT NULL );";
+            + COLUMN_ENGINESERIALNUMBER + " TEXT UNIQUE NOT NULL , "
+            + COLUMN_ENGINESIZE + " TEXT UNIQUE NOT NULL , "
+            + COLUMN_FUELTYPE + " TEXT NOT NULL );";
 
 
-    public RentalTypeRepositoryImpl(Context context) {
+    public EngineSizeRepositoryImpl(Context context) {
         super(context, DBConstants.DATABASE_NAME, null, DBConstants.DATABASE_VERSION);
     }
 
@@ -63,15 +65,16 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType findById(Long id) {
+    public EngineSizeEmbeddableType findById(Long id) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 TABLE_NAME,
                 new String[]{
                         COLUMN_ID,
-                        COLUMN_PICKUP,
-                        COLUMN_RETURN},
+                        COLUMN_ENGINESERIALNUMBER,
+                        COLUMN_ENGINESIZE,
+                        COLUMN_FUELTYPE},
                 COLUMN_ID + " =? ",
                 new String[]{String.valueOf(id)},
                 null,
@@ -79,27 +82,29 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
                 null,
                 null);
         if (cursor.moveToFirst()) {
-            final RentalType rentalTypes = new RentalType.Builder()
+            final EngineSizeEmbeddableType engineSizeEmbeddableTypes = new EngineSizeEmbeddableType.Builder()
                     .id(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)))
-                    .pickUpDate(cursor.getString(cursor.getColumnIndex(COLUMN_PICKUP)))
-                    .returnDate(cursor.getString(cursor.getColumnIndex(COLUMN_RETURN)))
+                    .EngineSerialNumber(cursor.getString(cursor.getColumnIndex(COLUMN_ENGINESERIALNUMBER)))
+                    .EngineSize(cursor.getString(cursor.getColumnIndex(COLUMN_ENGINESIZE)))
+                    .FuelType(cursor.getString(cursor.getColumnIndex(COLUMN_FUELTYPE)))
                     .build();
 
-            return rentalTypes;
+            return engineSizeEmbeddableTypes;
         } else {
             return null;
         }
     }
 
     @Override
-    public RentalType save(RentalType entity) {
+    public EngineSizeEmbeddableType save(EngineSizeEmbeddableType entity) {
         open();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, entity.getId());
-        values.put(COLUMN_PICKUP, entity.getPickUpDate());
-        values.put(COLUMN_RETURN, entity.getReturnDate());
+        values.put(COLUMN_ENGINESERIALNUMBER, entity.getEngineSerialNumber());
+        values.put(COLUMN_ENGINESIZE, entity.getEngineSize());
+        values.put(COLUMN_FUELTYPE, entity.getFuelType());
         long id = db.insertOrThrow(TABLE_NAME, null, values);
-        RentalType insertedEntity = new RentalType.Builder()
+        EngineSizeEmbeddableType insertedEntity = new EngineSizeEmbeddableType.Builder()
                 .copy(entity)
                 .id(new Long(id))
                 .build();
@@ -107,12 +112,13 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType update(RentalType entity) {
+    public EngineSizeEmbeddableType update(EngineSizeEmbeddableType entity) {
         open();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, entity.getId());
-        values.put(COLUMN_PICKUP, entity.getPickUpDate());
-        values.put(COLUMN_RETURN, entity.getReturnDate());
+        values.put(COLUMN_ENGINESERIALNUMBER, entity.getEngineSerialNumber());
+        values.put(COLUMN_ENGINESIZE, entity.getEngineSize());
+        values.put(COLUMN_FUELTYPE, entity.getFuelType());
         db.update(
                 TABLE_NAME,
                 values,
@@ -123,7 +129,7 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType delete(RentalType entity) {
+    public EngineSizeEmbeddableType delete(EngineSizeEmbeddableType entity) {
         open();
         db.delete(
                 TABLE_NAME,
@@ -133,22 +139,23 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public Set<RentalType> findAll() {
+    public Set<EngineSizeEmbeddableType> findAll() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Set<RentalType> rentalTypes = new HashSet<>();
+        Set<EngineSizeEmbeddableType> engineSizeEmbeddableTypes = new HashSet<>();
         open();
         Cursor cursor = db.query(TABLE_NAME, null,null,null,null,null,null);
         if (cursor.moveToFirst()) {
             do {
-                final RentalType rentalType = new RentalType.Builder()
+                final EngineSizeEmbeddableType engineSizeEmbeddableType = new EngineSizeEmbeddableType.Builder()
                         .id(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)))
-                        .pickUpDate(cursor.getString(cursor.getColumnIndex(COLUMN_PICKUP)))
-                        .returnDate(cursor.getString(cursor.getColumnIndex(COLUMN_RETURN)))
+                        .EngineSerialNumber(cursor.getString(cursor.getColumnIndex(COLUMN_ENGINESERIALNUMBER)))
+                        .EngineSize(cursor.getString(cursor.getColumnIndex(COLUMN_ENGINESIZE)))
+                        .FuelType(cursor.getString(cursor.getColumnIndex(COLUMN_FUELTYPE)))
                         .build();
-                rentalTypes.add(rentalType);
+                engineSizeEmbeddableTypes.add(engineSizeEmbeddableType);
             } while (cursor.moveToNext());
         }
-        return rentalTypes;
+        return engineSizeEmbeddableTypes;
     }
 
     @Override
@@ -158,6 +165,4 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
         close();
         return rowsDeleted;
     }
-
-
 }

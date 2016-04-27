@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class EngineSizeEmbeddableType implements Serializable {
 
+    private Long id;
     private String EngineSerialNumber;
     private String EngineSize;
     private String FuelType;
@@ -18,9 +19,14 @@ public class EngineSizeEmbeddableType implements Serializable {
 
     public EngineSizeEmbeddableType(Builder builder)
     {
+        this.id = builder.id;
         this.EngineSerialNumber = builder.EngineSerialNumber;
         this.EngineSize = builder.EngineSize;
         this.FuelType = builder.FuelType;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEngineSerialNumber() {
@@ -37,6 +43,7 @@ public class EngineSizeEmbeddableType implements Serializable {
 
     public static class Builder
     {
+        private Long id;
         private String EngineSerialNumber;
         private String EngineSize;
         private String FuelType;
@@ -59,8 +66,16 @@ public class EngineSizeEmbeddableType implements Serializable {
             return this;
         }
 
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+
+
         public Builder copy(EngineSizeEmbeddableType engineSizeEmbeddabletype)
         {
+            this.id = engineSizeEmbeddabletype.id;
             this.EngineSerialNumber = engineSizeEmbeddabletype.EngineSerialNumber;
             this.EngineSize = engineSizeEmbeddabletype.EngineSize;
             this.FuelType = engineSizeEmbeddabletype.FuelType;
@@ -80,6 +95,7 @@ public class EngineSizeEmbeddableType implements Serializable {
 
         EngineSizeEmbeddableType that = (EngineSizeEmbeddableType) o;
 
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (EngineSerialNumber != null ? !EngineSerialNumber.equals(that.EngineSerialNumber) : that.EngineSerialNumber != null)
             return false;
         if (EngineSize != null ? !EngineSize.equals(that.EngineSize) : that.EngineSize != null)
@@ -90,7 +106,8 @@ public class EngineSizeEmbeddableType implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = EngineSerialNumber != null ? EngineSerialNumber.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (EngineSerialNumber != null ? EngineSerialNumber.hashCode() : 0);
         result = 31 * result + (EngineSize != null ? EngineSize.hashCode() : 0);
         result = 31 * result + (FuelType != null ? FuelType.hashCode() : 0);
         return result;

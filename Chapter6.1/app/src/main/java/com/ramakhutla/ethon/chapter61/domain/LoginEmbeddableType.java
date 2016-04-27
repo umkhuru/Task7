@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class LoginEmbeddableType implements Serializable {
 
+    private Long id;
     private String username;
     private String password;
 
@@ -18,11 +19,15 @@ public class LoginEmbeddableType implements Serializable {
 
     public LoginEmbeddableType(Builder builder)
     {
+        this.id = builder.id;
         this.username = builder.username;
         this.password = builder.password;
     }
 
     //getters
+    public Long getId() {
+        return id;
+    }
     public String getUsername()
     {
         return username;
@@ -35,6 +40,7 @@ public class LoginEmbeddableType implements Serializable {
 
     public static class Builder
     {
+        private Long id;
         private String username;
         private String password;
 
@@ -50,8 +56,14 @@ public class LoginEmbeddableType implements Serializable {
             return this;
         }
 
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
         public Builder copy(LoginEmbeddableType loginEmbedabletype)
         {
+            this.id = loginEmbedabletype.id;
             this.username = loginEmbedabletype.username;
             this.password = loginEmbedabletype.password;
             return this;
@@ -63,6 +75,7 @@ public class LoginEmbeddableType implements Serializable {
         }
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,6 +83,7 @@ public class LoginEmbeddableType implements Serializable {
 
         LoginEmbeddableType that = (LoginEmbeddableType) o;
 
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (username != null ? !username.equals(that.username) : that.username != null)
             return false;
         return password != null ? password.equals(that.password) : that.password == null;
@@ -78,7 +92,8 @@ public class LoginEmbeddableType implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = username != null ? username.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         return result;
     }

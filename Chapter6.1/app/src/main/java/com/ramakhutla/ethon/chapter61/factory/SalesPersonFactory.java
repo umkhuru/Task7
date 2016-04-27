@@ -15,6 +15,7 @@ public class SalesPersonFactory {
     {
         return new SalesPersonType.Builder()
                 .firstName(firstName)
+                .lastName(lastName)
                 .hours(hours)
                 .rate(rate)
                 .customertype(customertype)

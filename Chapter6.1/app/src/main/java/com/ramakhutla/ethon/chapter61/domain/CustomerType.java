@@ -48,7 +48,7 @@ public class CustomerType implements PersonType, Serializable {
 
     //@Override
     public String getLastName() {
-        return null;
+        return lastName;
     }
 
     public String getPhoneNumber() {

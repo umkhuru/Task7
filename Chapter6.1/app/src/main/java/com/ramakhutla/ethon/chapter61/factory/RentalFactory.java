@@ -13,6 +13,7 @@ public class RentalFactory {
     public static RentalType getRental(String pickUpdate, String returnDate, List<PaymentMethodType> paymentMethodtype)
     {
         return new RentalType.Builder()
+                .pickUpDate(pickUpdate)
                 .returnDate(returnDate)
                 .paymentMethod(paymentMethodtype)
                 .build();

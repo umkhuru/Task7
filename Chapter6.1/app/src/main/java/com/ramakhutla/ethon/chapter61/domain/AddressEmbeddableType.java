@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class AddressEmbeddableType implements Serializable {
 
 
-
+    private Long id;
     private String Address;
     private String City;
     private String postalCode;
@@ -25,9 +25,13 @@ public class AddressEmbeddableType implements Serializable {
         this.Address = builder.Address;
         this.City = builder.City;
         this.postalCode = builder.postalCode;
+        this.id = builder.id;
     }
 
     //Getters
+    public Long getId() {
+        return id;
+    }
     public String getAddress() {
         return Address;
     }
@@ -45,6 +49,7 @@ public class AddressEmbeddableType implements Serializable {
         private String Address;
         private String City;
         private String postalCode;
+        private Long id;
 
         public Builder Address(String Address)
         {
@@ -64,8 +69,14 @@ public class AddressEmbeddableType implements Serializable {
             return this;
         }
 
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
         public Builder copy(AddressEmbeddableType addressEmbeddabletype)
         {
+            this.id = addressEmbeddabletype.id;
             this.Address = addressEmbeddabletype.Address;
             this.City = addressEmbeddabletype.City;
             this.postalCode = addressEmbeddabletype.postalCode;
@@ -85,6 +96,7 @@ public class AddressEmbeddableType implements Serializable {
 
         AddressEmbeddableType that = (AddressEmbeddableType) o;
 
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (Address != null ? !Address.equals(that.Address) : that.Address != null) return false;
         if (City != null ? !City.equals(that.City) : that.City != null) return false;
         return postalCode != null ? postalCode.equals(that.postalCode) : that.postalCode == null;
@@ -93,7 +105,8 @@ public class AddressEmbeddableType implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = Address != null ? Address.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (Address != null ? Address.hashCode() : 0);
         result = 31 * result + (City != null ? City.hashCode() : 0);
         result = 31 * result + (postalCode != null ? postalCode.hashCode() : 0);
         return result;

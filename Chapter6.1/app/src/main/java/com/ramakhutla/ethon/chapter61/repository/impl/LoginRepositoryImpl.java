@@ -9,34 +9,34 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.ramakhutla.ethon.chapter61.conf.DBConstants;
-import com.ramakhutla.ethon.chapter61.domain.RentalType;
-import com.ramakhutla.ethon.chapter61.repository.RentalTypeRepository;
+import com.ramakhutla.ethon.chapter61.domain.LoginEmbeddableType;
+import com.ramakhutla.ethon.chapter61.repository.LoginRepository;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by Osman on 2016-04-20.
+ * Created by Ethon on 4/27/2016.
  */
-public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements RentalTypeRepository {
+public class LoginRepositoryImpl extends SQLiteOpenHelper implements LoginRepository{
 
-    public static final String TABLE_NAME = "rentals";
+    public static final String TABLE_NAME = "login";
     private SQLiteDatabase db;
 
     public static final String COLUMN_ID = "id";
-    public static final String COLUMN_PICKUP = "pickUpDate";
-    public static final String COLUMN_RETURN = "returnDate";
+    public static final String COLUMN_USERNAME = "username";
+    public static final String COLUMN_PASSWORD = "password";
 
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = " CREATE TABLE "
             + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER  PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_PICKUP + " TEXT UNIQUE NOT NULL , "
-            + COLUMN_RETURN + " TEXT NOT NULL );";
+            + COLUMN_USERNAME + " TEXT UNIQUE NOT NULL , "
+            + COLUMN_PASSWORD + " TEXT NOT NULL );";
 
 
-    public RentalTypeRepositoryImpl(Context context) {
+    public LoginRepositoryImpl(Context context) {
         super(context, DBConstants.DATABASE_NAME, null, DBConstants.DATABASE_VERSION);
     }
 
@@ -63,15 +63,15 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType findById(Long id) {
+    public LoginEmbeddableType findById(Long id) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 TABLE_NAME,
                 new String[]{
                         COLUMN_ID,
-                        COLUMN_PICKUP,
-                        COLUMN_RETURN},
+                        COLUMN_USERNAME,
+                        COLUMN_PASSWORD},
                 COLUMN_ID + " =? ",
                 new String[]{String.valueOf(id)},
                 null,
@@ -79,27 +79,27 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
                 null,
                 null);
         if (cursor.moveToFirst()) {
-            final RentalType rentalTypes = new RentalType.Builder()
+            final LoginEmbeddableType loginEmbeddableTypes = new LoginEmbeddableType.Builder()
                     .id(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)))
-                    .pickUpDate(cursor.getString(cursor.getColumnIndex(COLUMN_PICKUP)))
-                    .returnDate(cursor.getString(cursor.getColumnIndex(COLUMN_RETURN)))
+                    .username(cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME)))
+                    .password(cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD)))
                     .build();
 
-            return rentalTypes;
+            return loginEmbeddableTypes;
         } else {
             return null;
         }
     }
 
     @Override
-    public RentalType save(RentalType entity) {
+    public LoginEmbeddableType save(LoginEmbeddableType entity) {
         open();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, entity.getId());
-        values.put(COLUMN_PICKUP, entity.getPickUpDate());
-        values.put(COLUMN_RETURN, entity.getReturnDate());
+        values.put(COLUMN_USERNAME, entity.getUsername());
+        values.put(COLUMN_PASSWORD, entity.getPassword());
         long id = db.insertOrThrow(TABLE_NAME, null, values);
-        RentalType insertedEntity = new RentalType.Builder()
+        LoginEmbeddableType insertedEntity = new LoginEmbeddableType.Builder()
                 .copy(entity)
                 .id(new Long(id))
                 .build();
@@ -107,12 +107,12 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType update(RentalType entity) {
+    public LoginEmbeddableType update(LoginEmbeddableType entity) {
         open();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, entity.getId());
-        values.put(COLUMN_PICKUP, entity.getPickUpDate());
-        values.put(COLUMN_RETURN, entity.getReturnDate());
+        values.put(COLUMN_USERNAME, entity.getUsername());
+        values.put(COLUMN_PASSWORD, entity.getPassword());
         db.update(
                 TABLE_NAME,
                 values,
@@ -123,7 +123,7 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType delete(RentalType entity) {
+    public LoginEmbeddableType delete(LoginEmbeddableType entity) {
         open();
         db.delete(
                 TABLE_NAME,
@@ -133,22 +133,22 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public Set<RentalType> findAll() {
+    public Set<LoginEmbeddableType> findAll() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Set<RentalType> rentalTypes = new HashSet<>();
+        Set<LoginEmbeddableType> loginEmbeddableTypes = new HashSet<>();
         open();
         Cursor cursor = db.query(TABLE_NAME, null,null,null,null,null,null);
         if (cursor.moveToFirst()) {
             do {
-                final RentalType rentalType = new RentalType.Builder()
+                final LoginEmbeddableType loginEmbeddableType = new LoginEmbeddableType.Builder()
                         .id(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)))
-                        .pickUpDate(cursor.getString(cursor.getColumnIndex(COLUMN_PICKUP)))
-                        .returnDate(cursor.getString(cursor.getColumnIndex(COLUMN_RETURN)))
+                        .username(cursor.getString(cursor.getColumnIndex(COLUMN_USERNAME)))
+                        .password(cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD)))
                         .build();
-                rentalTypes.add(rentalType);
+                loginEmbeddableTypes.add(loginEmbeddableType);
             } while (cursor.moveToNext());
         }
-        return rentalTypes;
+        return loginEmbeddableTypes;
     }
 
     @Override
@@ -158,6 +158,4 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
         close();
         return rowsDeleted;
     }
-
-
 }

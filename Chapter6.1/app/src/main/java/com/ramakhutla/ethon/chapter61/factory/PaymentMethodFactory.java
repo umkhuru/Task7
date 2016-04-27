@@ -16,16 +16,4 @@ public class PaymentMethodFactory {
     }
 
 
-
-
-
-
-    /*public static Settings getSettings(String email,String orgCode,String password){
-        return new Settings.Builder()
-                .username(email)
-                .password(password)
-                .code(orgCode)
-                .build();
-
-    }*/
 }

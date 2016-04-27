@@ -10,7 +10,7 @@ import junit.framework.Assert;
 import java.util.Set;
 
 /**
- * Created by Ethon on 4/24/2016.
+ * Created by Ethon on 4/27/2016.
  */
 public class RentalRepoTest extends AndroidTestCase {
 
@@ -21,8 +21,11 @@ public class RentalRepoTest extends AndroidTestCase {
         RentalTypeRepository repo = new RentalTypeRepositoryImpl(this.getContext());
         // CREATE
         RentalType createEntity = new RentalType.Builder()
-                .returnDate("12-12-15")
+                .pickUpDate("21-08-16")
+                .returnDate("09-09-16")
+                //.paymentMethod("card",0.9)
                 .build();
+
         RentalType insertedEntity = repo.save(createEntity);
         id=insertedEntity.getId();
         Assert.assertNotNull(TAG+" CREATE",insertedEntity);
@@ -40,11 +43,11 @@ public class RentalRepoTest extends AndroidTestCase {
         //UPDATE ENTITY
         RentalType updateEntity = new RentalType.Builder()
                 .copy(entity)
-                .returnDate("12-12-16")
+                .returnDate("21-09-16")
                 .build();
         repo.update(updateEntity);
         RentalType newEntity = repo.findById(id);
-        Assert.assertEquals(TAG+ " UPDATE ENTITY","12-12-16",newEntity.getReturnDate());
+        Assert.assertEquals(TAG+ " UPDATE ENTITY","21-09-16",newEntity.getReturnDate());
 
         // DELETE ENTITY
         repo.delete(updateEntity);
@@ -52,4 +55,5 @@ public class RentalRepoTest extends AndroidTestCase {
         Assert.assertNull(TAG+" DELETE",deletedEntity);
 
     }
+
 }

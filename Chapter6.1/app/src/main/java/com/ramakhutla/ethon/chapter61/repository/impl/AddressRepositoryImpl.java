@@ -9,34 +9,37 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.ramakhutla.ethon.chapter61.conf.DBConstants;
-import com.ramakhutla.ethon.chapter61.domain.RentalType;
-import com.ramakhutla.ethon.chapter61.repository.RentalTypeRepository;
+import com.ramakhutla.ethon.chapter61.domain.AddressEmbeddableType;
+import com.ramakhutla.ethon.chapter61.repository.AddressRepository;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by Osman on 2016-04-20.
+ * Created by Ethon on 4/27/2016.
  */
-public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements RentalTypeRepository {
+public class AddressRepositoryImpl extends SQLiteOpenHelper implements AddressRepository {
 
-    public static final String TABLE_NAME = "rentals";
+
+    public static final String TABLE_NAME = "address";
     private SQLiteDatabase db;
 
     public static final String COLUMN_ID = "id";
-    public static final String COLUMN_PICKUP = "pickUpDate";
-    public static final String COLUMN_RETURN = "returnDate";
+    public static final String COLUMN_ADDRESS = "Address";
+    public static final String COLUMN_CITY = "City";
+    public static final String COLUMN_POSTALCODE = "postalCode";
 
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = " CREATE TABLE "
             + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER  PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_PICKUP + " TEXT UNIQUE NOT NULL , "
-            + COLUMN_RETURN + " TEXT NOT NULL );";
+            + COLUMN_ADDRESS + " TEXT UNIQUE NOT NULL , "
+            + COLUMN_CITY + " TEXT UNIQUE NOT NULL , "
+            + COLUMN_POSTALCODE + " TEXT NOT NULL );";
 
 
-    public RentalTypeRepositoryImpl(Context context) {
+    public AddressRepositoryImpl(Context context) {
         super(context, DBConstants.DATABASE_NAME, null, DBConstants.DATABASE_VERSION);
     }
 
@@ -63,15 +66,16 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType findById(Long id) {
+    public AddressEmbeddableType findById(Long id) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 TABLE_NAME,
                 new String[]{
                         COLUMN_ID,
-                        COLUMN_PICKUP,
-                        COLUMN_RETURN},
+                        COLUMN_ADDRESS,
+                        COLUMN_CITY,
+                        COLUMN_POSTALCODE},
                 COLUMN_ID + " =? ",
                 new String[]{String.valueOf(id)},
                 null,
@@ -79,27 +83,29 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
                 null,
                 null);
         if (cursor.moveToFirst()) {
-            final RentalType rentalTypes = new RentalType.Builder()
+            final AddressEmbeddableType addressEmbeddableTypes = new AddressEmbeddableType.Builder()
                     .id(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)))
-                    .pickUpDate(cursor.getString(cursor.getColumnIndex(COLUMN_PICKUP)))
-                    .returnDate(cursor.getString(cursor.getColumnIndex(COLUMN_RETURN)))
+                    .Address(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)))
+                    .City(cursor.getString(cursor.getColumnIndex(COLUMN_CITY)))
+                    .postalCode(cursor.getString(cursor.getColumnIndex(COLUMN_POSTALCODE)))
                     .build();
 
-            return rentalTypes;
+            return addressEmbeddableTypes;
         } else {
             return null;
         }
     }
 
     @Override
-    public RentalType save(RentalType entity) {
+    public AddressEmbeddableType save(AddressEmbeddableType entity) {
         open();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, entity.getId());
-        values.put(COLUMN_PICKUP, entity.getPickUpDate());
-        values.put(COLUMN_RETURN, entity.getReturnDate());
+        values.put(COLUMN_ADDRESS, entity.getAddress());
+        values.put(COLUMN_CITY, entity.getCity());
+        values.put(COLUMN_POSTALCODE, entity.getPostalCode());
         long id = db.insertOrThrow(TABLE_NAME, null, values);
-        RentalType insertedEntity = new RentalType.Builder()
+        AddressEmbeddableType insertedEntity = new AddressEmbeddableType.Builder()
                 .copy(entity)
                 .id(new Long(id))
                 .build();
@@ -107,12 +113,13 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType update(RentalType entity) {
+    public AddressEmbeddableType update(AddressEmbeddableType entity) {
         open();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, entity.getId());
-        values.put(COLUMN_PICKUP, entity.getPickUpDate());
-        values.put(COLUMN_RETURN, entity.getReturnDate());
+        values.put(COLUMN_ADDRESS, entity.getAddress());
+        values.put(COLUMN_CITY, entity.getCity());
+        values.put(COLUMN_POSTALCODE, entity.getPostalCode());
         db.update(
                 TABLE_NAME,
                 values,
@@ -123,7 +130,7 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public RentalType delete(RentalType entity) {
+    public AddressEmbeddableType delete(AddressEmbeddableType entity) {
         open();
         db.delete(
                 TABLE_NAME,
@@ -133,22 +140,23 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
     }
 
     @Override
-    public Set<RentalType> findAll() {
+    public Set<AddressEmbeddableType> findAll() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Set<RentalType> rentalTypes = new HashSet<>();
+        Set<AddressEmbeddableType> addressEmbeddableTypes = new HashSet<>();
         open();
         Cursor cursor = db.query(TABLE_NAME, null,null,null,null,null,null);
         if (cursor.moveToFirst()) {
             do {
-                final RentalType rentalType = new RentalType.Builder()
+                final AddressEmbeddableType addressEmbeddableType = new AddressEmbeddableType.Builder()
                         .id(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)))
-                        .pickUpDate(cursor.getString(cursor.getColumnIndex(COLUMN_PICKUP)))
-                        .returnDate(cursor.getString(cursor.getColumnIndex(COLUMN_RETURN)))
+                        .Address(cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)))
+                        .City(cursor.getString(cursor.getColumnIndex(COLUMN_CITY)))
+                        .postalCode(cursor.getString(cursor.getColumnIndex(COLUMN_POSTALCODE)))
                         .build();
-                rentalTypes.add(rentalType);
+                addressEmbeddableTypes.add(addressEmbeddableType);
             } while (cursor.moveToNext());
         }
-        return rentalTypes;
+        return addressEmbeddableTypes;
     }
 
     @Override
@@ -158,6 +166,4 @@ public class RentalTypeRepositoryImpl extends SQLiteOpenHelper implements Rental
         close();
         return rowsDeleted;
     }
-
-
 }

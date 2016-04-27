@@ -14,7 +14,7 @@ public class CustomerFactory {
     public static CustomerType getCustomerType(String firstName, String lastName, String phoneNumber, String Address, String City, String postalCode, String username, String password, List<RentalType> rentalstype)
     {
         return new CustomerType.Builder()
-                .firstName(lastName)
+                .lastName(lastName)
                 .firstName(firstName)
                 .phoneNumber(phoneNumber)
                 .addressEmbeddabletype(AddressFactory.getAddressEmbeddableType(Address, City, postalCode))
@@ -25,20 +25,4 @@ public class CustomerFactory {
     }
 
 
-
-
-
-
-
-
-
-
-    /*public static Settings getSettings(String email,String orgCode,String password){
-        return new Settings.Builder()
-                .username(email)
-                .password(password)
-                .code(orgCode)
-                .build();
-
-    }*/
 }
